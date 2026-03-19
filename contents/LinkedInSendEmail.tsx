@@ -1,0 +1,145 @@
+import type { PlasmoCSConfig, PlasmoGetInlineAnchorList } from "plasmo";
+import { Mail } from "lucide-react";
+import { Storage } from "@plasmohq/storage";
+
+export const config: PlasmoCSConfig = {
+  matches: [
+    "https://www.linkedin.com/feed*",
+    "https://www.linkedin.com/posts/*",
+    "https://www.linkedin.com/search/results/*"
+  ]
+};
+
+const storage = new Storage();
+
+const buttonStyles = `
+  .outreach-btn-container {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 4px;
+    margin: 4px 0;
+  }
+  .outreach-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: #0077b5;
+    background: linear-gradient(135deg, #0077b5 0%, #005a87 100%);
+    color: white !important;
+    border: none;
+    border-radius: 24px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0, 119, 181, 0.25);
+    white-space: nowrap;
+    text-decoration: none !important;
+  }
+  .outreach-btn:hover {
+    background: #0087cb;
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 4px 12px rgba(0, 119, 181, 0.35);
+  }
+  .outreach-btn svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+`;
+
+// Target the social action bar for native placement
+export const getInlineAnchorList: PlasmoGetInlineAnchorList = async () => {
+  return document.querySelectorAll([
+    ".feed-shared-social-action-bar",
+    ".artdeco-card .feed-shared-social-action-bar",
+    ".entity-result__actions"
+  ].join(","));
+};
+
+const LinkedInInlineButton = ({ anchor }) => {
+  const handleGenerateClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    // Find the closest post element to extract data
+    const postElement = anchor.element.closest(".feed-shared-update-v2, .entity-result__item, [data-urn], .fixed-full");
+    // Smarter author extraction to avoid duplicates and metadata like "• 3rd+Verified"
+    const authorElement = postElement?.querySelector([
+      ".update-components-actor__name [aria-hidden='true']",
+      ".update-components-actor__name",
+      ".feed-shared-update-v2__actor-link > span[aria-hidden='true']",
+      ".update-components-actor__title [aria-hidden='true']",
+      ".entity-result__title-text a [aria-hidden='true']",
+      ".entity-result__title-text a",
+      ".feed-shared-actor__title [aria-hidden='true']"
+    ].join(","));
+    
+    let author = authorElement?.textContent?.trim() || "Author";
+    // Clean up if it contains bullets or extra info
+    if (author.includes("•")) {
+      author = author.split("•")[0].trim();
+    }
+    // Remove potential duplicates (e.g., "NameName")
+    const words = author.split(/\s+/).filter(w => w.length > 0);
+    if (words.length >= 2) {
+      const half = Math.floor(words.length / 2);
+      const firstHalf = words.slice(0, half).join(" ");
+      const secondHalf = words.slice(half).join(" ");
+      if (firstHalf.toLowerCase() === secondHalf.toLowerCase()) {
+        author = words.slice(0, half).join(" ");
+      }
+    }
+
+    const postText = postElement?.querySelector([
+      ".feed-shared-update-v2__description",
+      ".feed-shared-text",
+      ".break-words",
+      ".entity-result__summary",
+      ".update-components-text",
+      ".update-components-text-view"
+    ].join(","))?.textContent?.trim() || "";
+
+    // Extract email from post text with better regex boundaries
+    const emailMatch = postText.match(/\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b/);
+    let email = emailMatch ? emailMatch[0] : "";
+    
+    // Manual cleanup for common text glued to emails by LinkedIn's text content (like .hashtag)
+    if (email) {
+      const commonTlds = [".com", ".in", ".co", ".io", ".net", ".org", ".me", ".ai", ".biz"];
+      const lowerEmail = email.toLowerCase();
+      for (const tld of commonTlds) {
+        if (lowerEmail.includes(tld)) {
+          const cutIndex = lowerEmail.indexOf(tld) + tld.length;
+          // Only trim if there's actually something after it
+          if (cutIndex < email.length) {
+            email = email.substring(0, cutIndex);
+          }
+          break;
+        }
+      }
+    }
+
+    // Trigger the sidebar by setting storage
+    storage.set("triggerSidebar", {
+      author,
+      postText,
+      email,
+      timestamp: Date.now()
+    });
+  };
+
+  return (
+    <div className="outreach-btn-container">
+      <style>{buttonStyles}</style>
+      <button
+        onClick={handleGenerateClick}
+        className="outreach-btn"
+      >
+        <Mail /> Send Email
+      </button>
+    </div>
+  );
+};
+
+export default LinkedInInlineButton;
