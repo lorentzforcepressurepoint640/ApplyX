@@ -1,6 +1,9 @@
+import React from "react";
 import type { PlasmoCSConfig, PlasmoGetInlineAnchorList } from "plasmo";
 import { Mail } from "lucide-react";
 import { Storage } from "@plasmohq/storage";
+import { outreachButtonStyles as styles } from "./styles";
+
 
 export const config: PlasmoCSConfig = {
   matches: [
@@ -11,43 +14,6 @@ export const config: PlasmoCSConfig = {
 };
 
 const storage = new Storage();
-
-const buttonStyles = `
-  .outreach-btn-container {
-    display: inline-flex;
-    align-items: center;
-    padding: 0 4px;
-    margin: 4px 0;
-  }
-  .outreach-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    background: #0077b5;
-    background: linear-gradient(135deg, #0077b5 0%, #005a87 100%);
-    color: white !important;
-    border: none;
-    border-radius: 24px;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 2px 8px rgba(0, 119, 181, 0.25);
-    white-space: nowrap;
-    text-decoration: none !important;
-  }
-  .outreach-btn:hover {
-    background: #0087cb;
-    transform: translateY(-1px) scale(1.02);
-    box-shadow: 0 4px 12px rgba(0, 119, 181, 0.35);
-  }
-  .outreach-btn svg {
-    width: 14px;
-    height: 14px;
-    flex-shrink: 0;
-  }
-`;
 
 // Target the social action bar for native placement
 export const getInlineAnchorList: PlasmoGetInlineAnchorList = async () => {
@@ -131,7 +97,7 @@ const LinkedInInlineButton = ({ anchor }) => {
 
   return (
     <div className="outreach-btn-container">
-      <style>{buttonStyles}</style>
+      <style>{styles}</style>
       <button
         onClick={handleGenerateClick}
         className="outreach-btn"
@@ -142,4 +108,6 @@ const LinkedInInlineButton = ({ anchor }) => {
   );
 };
 
+
 export default LinkedInInlineButton;
+
