@@ -33,8 +33,82 @@ ApplyX is an open-source tool designed to make job hunting faster and more perso
 ## ⚙️ Project Structure
 
 - `apps/extension`: The Chrome extension (Plasmo + React).
-- `apps/web`: The optional dashboard/backend (Next.js).
-- `packages/ai-core`: Shared AI logic and prompts (coming soon).
+- `apps/web`: The Next.js dashboard/backend (Supabase + Auth).
+- `packages/ai-core`: Shared AI logic and prompts.
+
+## 🛠️ Step-by-Step Setup
+
+### 1. Supabase Setup (Database & Storage)
+1.  Create a free project at [Supabase](https://supabase.com).
+2.  Go to the **SQL Editor** and run the following commands to create the necessary tables:
+    ```sql
+    -- Create profiles table
+    CREATE TABLE profiles (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      email TEXT UNIQUE NOT NULL,
+      name TEXT,
+      image TEXT,
+      access_token TEXT,
+      refresh_token TEXT,
+      api_key TEXT UNIQUE,
+      updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    );
+
+    -- Create resumes table
+    CREATE TABLE resumes (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      user_id TEXT UNIQUE NOT NULL,
+      resume_text TEXT NOT NULL,
+      file_name TEXT,
+      file_content TEXT,
+      updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    );
+
+    -- Create sent_emails table
+    CREATE TABLE sent_emails (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      user_id TEXT NOT NULL,
+      recipient TEXT NOT NULL,
+      subject TEXT,
+      body TEXT,
+      thread_id TEXT,
+      message_id TEXT,
+      status TEXT,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    );
+    ```
+3.  Go to **Project Settings > API** and get your `Project URL` and `anon public` key.
+
+### 2. Google OAuth & Gmail API Setup
+1.  Go to the [Google Cloud Console](https://console.cloud.google.com/).
+2.  Create a **New Project**.
+3.  Search for **Gmail API** and click **Enable**.
+4.  Go to **OAuth consent screen**:
+    *   Choose **External**.
+    *   Add your email to **Test users**.
+    *   Add scopes: `openid`, `https://www.googleapis.com/auth/userinfo.email`, `https://www.googleapis.com/auth/userinfo.profile`, and `https://www.googleapis.com/auth/gmail.send`.
+5.  Go to **Credentials**:
+    *   Click **Create Credentials > OAuth client ID**.
+    *   Application type: **Web application**.
+    *   Authorized redirect URIs: `http://localhost:3000/api/auth/callback/google` (and your production URL).
+    *   Copy your **Client ID** and **Client Secret**.
+
+### 3. Environment Variables
+Create a `.env.local` in `apps/web` with:
+```bash
+GROQ_API_KEY=gsk_your_groq_api_key_here
+SUPABASE_URL=your_supabase_url
+SUPABASE_ANON_KEY=your_supabase_anon_key
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+NEXTAUTH_SECRET=any_random_string
+```
+> Get your free Groq API key at [console.groq.com](https://console.groq.com/).
+
+### 4. Running the Project
+1.  Root: `npm install`
+2.  Extension: `cd apps/extension && npm run dev`
+3.  Web: `cd apps/web && npm run dev`
 
 ## 🌍 Open Source Growth Hack
 

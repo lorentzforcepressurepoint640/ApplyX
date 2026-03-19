@@ -187,7 +187,7 @@ export default function DashboardPage() {
                       <td className="px-8 py-6">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center font-black">
-                            {item.to.charAt(0).toUpperCase()}
+                            {item?.to?.charAt(0)?.toUpperCase()}
                           </div>
                           <div>
                             <p className="font-black text-slate-900 dark:text-white leading-none">{item.to}</p>

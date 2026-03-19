@@ -2,8 +2,7 @@ export const runtime = "nodejs"
 
 import { NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
-import dbConnect from "@/lib/db"
-import Resume from "@/models/Resume"
+import { supabase } from "@/lib/supabase"
 import { parsePdf } from "@/lib/resume-parser"
 
 export async function POST(req: Request) {
@@ -29,24 +28,41 @@ export async function POST(req: Request) {
 
     const arrayBuffer = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
-    const resumeText = await parsePdf(buffer)
+    const base64Content = buffer.toString('base64')
+    const resume_text = await parsePdf(buffer)
+    const portfolioUrl = formData.get("portfolioUrl") as string || ""
+    const fullName = formData.get("fullName") as string || ""
 
-    await dbConnect()
+    // 1. Update/Upsert Resume in Supabase 'resumes'
+    const { error: resumeError } = await supabase
+      .from('resumes')
+      .upsert({
+        user_id: session.user.email,
+        resume_text,
+        file_name: file.name,
+        file_content: base64Content, // Store base64 for email attachments
+        updated_at: new Date().toISOString(),
+      }, { onConflict: 'user_id' });
 
-    // Store Or Update
-    await Resume.findOneAndUpdate(
-      { userId: session.user.email },
-      {
-        resumeText,
-        fileName: file.name,
-        content: buffer,
-      },
-      { upsert: true, new: true }
-    )
+    if (resumeError) throw resumeError;
+
+    // 2. Update Profile (Optional Portfolio & Name)
+    const profileUpdate: any = {};
+    if (portfolioUrl) profileUpdate.portfolio_url = portfolioUrl;
+    if (fullName) profileUpdate.name = fullName;
+
+    if (Object.keys(profileUpdate).length > 0) {
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update(profileUpdate)
+        .eq('email', session.user.email);
+      
+      if (profileError) console.error("Profile update error:", profileError);
+    }
 
     return NextResponse.json({
       success: true,
-      message: "Resume parsed and stored successfully",
+      message: "Resume & Portfolio updated successfully",
       fileName: file.name,
     })
   } catch (error: any) {

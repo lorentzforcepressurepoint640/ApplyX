@@ -12,39 +12,26 @@ export const config: any = {
 
 const storage = new Storage();
 
-// Direct OpenAI generation logic for simplified setup
-import OpenAI from "openai";
-
 const LinkedInSidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const [apiKey, setApiKey] = useState<string | null>(null);
-  const [resumeText, setResumeText] = useState<string>("");
   const [isConfiguring, setIsConfiguring] = useState(false);
-  const [keyInput, setKeyInput] = useState("");
-  const [resumeInput, setResumeInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [emailText, setEmailText] = useState("");
   const [emailSubject, setEmailSubject] = useState("");
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
   const [sending, setSending] = useState(false);
-  
+  const [extensionKey, setExtensionKey] = useState("");
+  const [showReview, setShowReview] = useState(false);
   const [authorInput, setAuthorInput] = useState("");
   const [postInput, setPostInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
-  const [showReview, setShowReview] = useState(false);
 
   useEffect(() => {
-    storage.get("apiKey").then(val => {
-      setApiKey(val as string);
+    storage.get("extensionKey").then(val => {
+      setExtensionKey(val as string || "");
       if (!val) setIsConfiguring(true);
-      setKeyInput(val as string || "");
-    });
-
-    storage.get("resumeText").then(val => {
-      setResumeText(val as string || "");
-      setResumeInput(val as string || "");
     });
 
     storage.watch({
@@ -61,17 +48,15 @@ const LinkedInSidebar = () => {
         }
       }
     });
+
   }, []);
 
   const handleSaveConfig = async () => {
-    if (!keyInput) {
-      alert("OpenAI API Key is required.");
+    if (!extensionKey) {
+      alert("Extension Key is required.");
       return;
     }
-    await storage.set("apiKey", keyInput);
-    await storage.set("resumeText", resumeInput);
-    setApiKey(keyInput);
-    setResumeText(resumeInput);
+    await storage.set("extensionKey", extensionKey);
     setIsConfiguring(false);
   };
 
@@ -80,7 +65,7 @@ const LinkedInSidebar = () => {
       setError("Please provide all fields.");
       return;
     }
-    if (!apiKey) {
+    if (!extensionKey) {
       setIsConfiguring(true);
       return;
     }
@@ -90,44 +75,22 @@ const LinkedInSidebar = () => {
     setShowReview(false);
 
     try {
-      const openai = new OpenAI({
-        apiKey: apiKey,
-        dangerouslyAllowBrowser: true
+      if (!extensionKey) {
+        setIsConfiguring(true);
+        return;
+      }
+      // Use backend generation with stored resume
+      const { data } = await axios.post("http://localhost:3000/api/generate-email", {
+        postText: postInput,
+        authorName: authorInput,
+        company: ""
+      }, {
+        headers: { 'x-api-key': extensionKey }
       });
-
-      const prompt = `
-        You are an AI assistant helping a user write a personalized job outreach email on LinkedIn.
-        
-        USER RESUME CONTEXT:
-        ${resumeText}
-
-        LINKEDIN POST CONTEXT:
-        Author: ${authorInput}
-        Post Content: ${postInput}
-
-        TASK:
-        Generate a professional, concise, and personalized outreach email or message. 
-        Focus on how the user's background (from resume) aligns with the post context.
-        Keep it under 150 words.
-
-        Return the response in JSON format:
-        {
-          "subject": "Clear, catchy subject line",
-          "body": "The message body"
-        }
-      `;
-
-      const response = await openai.chat.completions.create({
-        model: "gpt-4o",
-        messages: [{ role: "user", content: prompt }],
-        response_format: { type: "json_object" }
-      });
-
-      const content = JSON.parse(response.choices[0].message.content || "{}");
-      setEmailSubject(content.subject || "Re: Job Inquiry");
-      setEmailText(content.body || "");
+      setEmailSubject(data.subject || "Re: Job Inquiry");
+      setEmailText(data.body || "");
     } catch (err: any) {
-      setError(err.message || "Generation failed. Check your API key.");
+      setError(err.response?.data?.error || err.message || "Generation failed.");
     } finally {
       setLoading(false);
     }
@@ -139,14 +102,30 @@ const LinkedInSidebar = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleSend = () => {
-    alert("Sending via backend is disabled in local mode. Please use Copy and paste into your email client.");
+  const handleSend = async () => {
+    if (!emailInput) return;
+    setSending(true);
+    try {
+      await axios.post("http://localhost:3000/api/send-email", {
+        to: emailInput,
+        subject: emailSubject,
+        body: emailText
+      }, {
+        headers: { 'x-api-key': extensionKey }
+      });
+      alert("Email sent successfully via ApplyX!");
+      setIsOpen(false);
+    } catch (err: any) {
+      alert("Failed to send: " + (err.response?.data?.error || err.message));
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
     <>
       <style>{styles}</style>
-      
+
       {!isOpen && (
         <button onClick={() => setIsOpen(true)} className="floating-toggle">
           <Mail size={28} />
@@ -169,26 +148,18 @@ const LinkedInSidebar = () => {
             <div className="sidebar-content">
               {isConfiguring ? (
                 <Card>
-                  <Label>OpenAI API Key</Label>
-                  <Input 
-                    type="password" 
-                    placeholder="sk-..." 
-                    value={keyInput}
-                    onChange={e => setKeyInput(e.target.value)}
+                  <Label>ApplyX Extension Key</Label>
+                  <Input
+                    placeholder="ext_..."
+                    value={extensionKey}
+                    onChange={e => setExtensionKey(e.target.value)}
                   />
-                  <div style={{ height: '15px' }} />
-                  <Label>Your Resume / Bio (Context)</Label>
-                  <TextArea 
-                    placeholder="Paste your resume or a brief bio here..." 
-                    value={resumeInput}
-                    onChange={e => setResumeInput(e.target.value)}
-                    style={{ height: '150px' }}
-                  />
-                  <p style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '8px' }}>
-                    💡 Tip: Paste your full resume or a brief bio so the AI knows your experience.
+                  <p style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '5px' }}>
+                    Copy your unique key from the ApplyX dashboard to connect your account.
                   </p>
-                  <PrimaryButton style={{ marginTop: '15px' }} onClick={handleSaveConfig}>
-                    Save Config
+
+                  <PrimaryButton style={{ marginTop: '20px' }} onClick={handleSaveConfig}>
+                    Save Extension Key
                   </PrimaryButton>
                 </Card>
               ) : showReview ? (
@@ -245,9 +216,9 @@ const LinkedInSidebar = () => {
             <div className="sidebar-footer">
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                 <span className="footer-text">ApplyX v1.0 • Local Mode</span>
-                <button 
-                  onClick={() => setIsConfiguring(true)} 
-                  className="dashboard-link" 
+                <button
+                  onClick={() => setIsConfiguring(true)}
+                  className="dashboard-link"
                   style={{ background: 'transparent', border: 'none', cursor: 'pointer' }}
                 >
                   ⚙️ Settings

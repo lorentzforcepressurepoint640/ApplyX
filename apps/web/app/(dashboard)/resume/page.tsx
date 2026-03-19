@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,8 +11,22 @@ import { Upload, FileText, Loader2, CheckCircle2 } from "lucide-react";
 
 export default function ResumePage() {
   const [file, setFile] = useState<File | null>(null);
+  const [portfolioUrl, setPortfolioUrl] = useState("");
+  const [fullName, setFullName] = useState("");
   const [uploading, setUploading] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  useEffect(() => {
+    async function fetchName() {
+        const res = await fetch("/api/user/profile");
+        if (res.ok) {
+            const data = await res.json();
+            if (data.name) setFullName(data.name);
+            if (data.portfolioUrl) setPortfolioUrl(data.portfolioUrl);
+        }
+    }
+    fetchName();
+  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
@@ -30,6 +44,8 @@ export default function ResumePage() {
     setUploading(true);
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("portfolioUrl", portfolioUrl);
+    formData.append("fullName", fullName);
 
     try {
       const res = await fetch("/api/resume/upload", {
@@ -38,7 +54,7 @@ export default function ResumePage() {
       });
 
       if (res.ok) {
-        toast.success("Resume uploaded and parsed successfully!");
+        toast.success("Profile saved and resume uploaded!");
         setSuccess(true);
       } else {
         const error = await res.json();
@@ -53,21 +69,41 @@ export default function ResumePage() {
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
-      <h1 className="text-3xl font-extrabold tracking-tight">Manage Resume</h1>
+      <h1 className="text-3xl font-extrabold tracking-tight">Manage Profile</h1>
       <p className="text-muted-foreground">
-        Upload your latest resume in PDF format. We'll parse it to personalize your outreach emails.
+        Complete your profile to personalize your job outreach. 
       </p>
 
-      <Card className="border-2 border-dashed border-muted-foreground/20 bg-muted/5">
+      <Card>
         <CardHeader>
-          <CardTitle>Resume Upload</CardTitle>
-          <CardDescription>Supported format: PDF only (Max 5MB)</CardDescription>
+          <CardTitle>Professional Details</CardTitle>
+          <CardDescription>Keep these updated for the best AI outreach.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="flex flex-col items-center justify-center p-8 bg-background border rounded-lg transition-all hover:bg-muted/30">
+          <div className="space-y-2">
+            <Label htmlFor="full-name">Full Name (Used in email subject)</Label>
+            <Input 
+              id="full-name" 
+              placeholder="e.g. Sahil Sharma" 
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="portfolio-url">Portfolio/Personal Website (Optional)</Label>
+            <Input 
+              id="portfolio-url" 
+              placeholder="https://your-portfolio.com" 
+              value={portfolioUrl}
+              onChange={(e) => setPortfolioUrl(e.target.value)}
+            />
+          </div>
+
+          <div className="flex flex-col items-center justify-center p-8 bg-muted/5 border-2 border-dashed rounded-lg">
             <Upload className="h-12 w-12 text-muted-foreground mb-4" />
             <Label htmlFor="resume-upload" className="mb-2 cursor-pointer text-primary hover:underline font-medium">
-              Click to select or drag and drop
+              Click to select Resume PDF
             </Label>
             <Input 
               id="resume-upload" 
@@ -92,10 +128,10 @@ export default function ResumePage() {
           >
             {uploading ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Parsing...
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Syncing...
               </>
             ) : (
-              "Upload and Parse Resume"
+              "Save and Upload Profile"
             )}
           </Button>
 

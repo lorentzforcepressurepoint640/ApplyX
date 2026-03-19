@@ -1,7 +1,6 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import dbConnect from "@/lib/db";
-import User from "@/models/User";
+import { supabase } from "@/lib/supabase";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
@@ -22,19 +21,22 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async signIn({ user, account }) {
       if (!user.email) return false;
       
-      await dbConnect();
-      
-      // Update or Create user with tokens
-      await User.findOneAndUpdate(
-        { email: user.email },
-        { 
+      // Update or Create user with tokens in Supabase
+      const { error } = await supabase
+        .from('profiles')
+        .upsert({
+          email: user.email,
           name: user.name,
           image: user.image,
-          ...(account?.access_token && { accessToken: account.access_token }),
-          ...(account?.refresh_token && { refreshToken: account.refresh_token }),
-        },
-        { upsert: true, new: true }
-      );
+          access_token: account?.access_token,
+          refresh_token: account?.refresh_token,
+          updated_at: new Date().toISOString(),
+        }, { onConflict: 'email' });
+        
+      if (error) {
+        console.error("Supabase upsert error:", error);
+        return false;
+      }
       
       return true;
     },

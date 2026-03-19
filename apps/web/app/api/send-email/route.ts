@@ -1,14 +1,9 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-import dbConnect from '@/lib/db';
-import User from '@/models/User';
-import SentEmail from '@/models/SentEmail';
-import Resume from '@/models/Resume';
+import { supabase } from '@/lib/supabase';
 import { sendEmailWithGmail } from '@/lib/gmail';
 
-export async function OPTIONS() {
-  return new NextResponse(null, { status: 204 });
-}
+
 
 export async function POST(req: Request) {
   try {
@@ -16,9 +11,12 @@ export async function POST(req: Request) {
     let userEmail: string | undefined;
 
     if (apiKey) {
-      await dbConnect();
-      const user = await User.findOne({ apiKey });
-      if (user) userEmail = user.email;
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('email')
+        .eq('api_key', apiKey)
+        .single();
+      if (profile) userEmail = profile.email;
     }
 
     if (!userEmail) {
@@ -36,40 +34,50 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    await dbConnect();
-    const user = await User.findOne({ email: userEmail });
+    const { data: userProfile } = await supabase
+      .from('profiles')
+      .select('access_token, refresh_token')
+      .eq('email', userEmail)
+      .single();
 
-    if (!user?.accessToken) {
+    if (!userProfile?.access_token) {
       return NextResponse.json({ 
         error: 'Google OAuth token not found. Please log in again.' 
         }, { status: 401 });
     }
 
-    // Try to find resume attachment
-    const resume = await Resume.findOne({ userId: userEmail });
-    const attachment = (resume && resume.content) ? {
-      filename: resume.fileName || 'Resume.pdf',
-      content: resume.content.toString('base64'),
+    // Try to find resume attachment from Supabase
+    const { data: resumeData } = await supabase
+      .from('resumes')
+      .select('resume_text, file_name, file_content')
+      .eq('user_id', userEmail)
+      .single();
+
+    // Note: If file_content was stored as a buffer in DB, we'd use it here.
+    // For now, let's assume we store the base64 content in Supabase if we want attachments.
+    const attachment = (resumeData && resumeData.file_content) ? {
+      filename: resumeData.file_name || 'Resume.pdf',
+      content: resumeData.file_content, // Assuming base64 string in Supabase
       contentType: 'application/pdf'
     } : undefined;
 
     const result = await sendEmailWithGmail(
-      user.accessToken,
-      user.refreshToken || '',
+      userProfile.access_token,
+      userProfile.refresh_token || '',
       to,
       subject,
       body,
       attachment
     );
 
-    // Save record to DB
-    await SentEmail.create({
-      userId: user._id,
-      to,
+    // Save record to DB in Supabase 'sent_emails' table
+    await supabase.from('sent_emails').insert({
+      user_id: userEmail,
+      recipient: to,
       subject,
       body,
-      threadId: result.threadId,
-      messageId: result.id,
+      thread_id: result.threadId,
+      message_id: result.id,
       status: 'sent'
     });
 

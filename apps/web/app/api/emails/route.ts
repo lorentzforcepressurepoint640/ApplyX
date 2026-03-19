@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-import dbConnect from '@/lib/db';
-import User from '@/models/User';
-import SentEmail from '@/models/SentEmail';
+import { supabase } from '@/lib/supabase';
 
 export async function GET() {
   try {
@@ -11,15 +9,17 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    await dbConnect();
-    const user = await User.findOne({ email: session.user.email });
-    if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
-    }
-
-    const emails = await SentEmail.find({ userId: user._id })
-      .sort({ createdAt: -1 })
+    const { data: emails, error } = await supabase
+      .from('sent_emails')
+      .select('*')
+      .eq('user_id', session.user.email)
+      .order('created_at', { ascending: false })
       .limit(50);
+
+    if (error) {
+      console.error('Supabase fetch error:', error);
+      throw new Error('Failed to fetch emails');
+    }
 
     return NextResponse.json({ emails });
   } catch (error: any) {

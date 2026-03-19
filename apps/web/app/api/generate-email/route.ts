@@ -1,13 +1,8 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-import dbConnect from '@/lib/db';
-import Resume from '@/models/Resume';
-import User from '@/models/User';
+import { supabase } from '@/lib/supabase';
 import { generatePersonalizedEmail } from '@/lib/openai';
 
-export async function OPTIONS() {
-  return new NextResponse(null, { status: 204 });
-}
 
 export async function POST(req: Request) {
   try {
@@ -15,11 +10,12 @@ export async function POST(req: Request) {
     let userEmail: string | undefined;
 
     if (apiKey) {
-      await dbConnect();
-      const user = await User.findOne({ apiKey });
-      if (user) {
-        userEmail = user.email;
-      }
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('email')
+        .eq('api_key', apiKey)
+        .single();
+      if (profile) userEmail = profile.email;
     }
 
     if (!userEmail) {
@@ -37,23 +33,23 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Post text and author name are required' }, { status: 400 });
     }
 
-    await dbConnect();
-    const [resumeData, user] = await Promise.all([
-      Resume.findOne({ userId: userEmail }),
-      User.findOne({ email: userEmail })
+    const [resumeFetch, profileFetch] = await Promise.all([
+      supabase.from('resumes').select('resume_text').eq('user_id', userEmail).single(),
+      supabase.from('profiles').select('portfolio_url, name').eq('email', userEmail).single()
     ]);
 
-    if (!resumeData) {
+    if (!resumeFetch.data) {
       return NextResponse.json({ 
         error: 'Resume not found. Please upload your resume first on the dashboard.' 
       }, { status: 404 });
     }
 
     const generated = await generatePersonalizedEmail(
-      resumeData.resumeText,
+      resumeFetch.data.resume_text,
       postText,
       authorName,
-      user?.portfolioUrl || "https://codewsahhil.vercel.app"
+      profileFetch.data?.name || "User",
+      profileFetch.data?.portfolio_url || ""
     );
 
     return NextResponse.json(generated);

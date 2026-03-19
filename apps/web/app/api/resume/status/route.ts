@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-import dbConnect from '@/lib/db';
-import Resume from '@/models/Resume';
+import { supabase } from '@/lib/supabase';
 
 export async function GET() {
   try {
@@ -10,10 +9,13 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    await dbConnect();
-    const resume = await Resume.findOne({ userId: session.user.email });
+    const { data: resume, error } = await supabase
+      .from('resumes')
+      .select('file_name')
+      .eq('user_id', session.user.email)
+      .single();
 
-    return NextResponse.json({ exists: !!resume, fileName: resume?.fileName });
+    return NextResponse.json({ exists: !!resume, fileName: resume?.file_name });
   } catch (error) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }

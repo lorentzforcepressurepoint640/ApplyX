@@ -1,22 +1,16 @@
-import { AzureOpenAI } from "openai"
+import OpenAI from "openai"
 
-const endpoint = process.env.AZURE_OPENAI_ENDPOINT!
-const apiKey = process.env.AZURE_OPENAI_API_KEY!
-const deployment = process.env.AZURE_OPENAI_DEPLOYMENT || "gpt-4o-mini"
-const apiVersion = process.env.AZURE_OPENAI_API_VERSION || "2024-12-01-preview"
-
-const client = new AzureOpenAI({
-  endpoint,
-  apiKey,
-  apiVersion,
-  deployment,
+const client = new OpenAI({
+  apiKey: process.env.GROQ_API_KEY,
+  baseURL: "https://api.groq.com/openai/v1",
 })
 
 export async function generatePersonalizedEmail(
   resumeText: string,
   postText: string,
   authorName: string,
-  portfolioUrl: string = "https://codewsahhil.vercel.app"
+  userName: string = "User",
+  portfolioUrl: string = ""
 ) {
   const prompt = `
 You are a software engineer writing a real outreach email to another engineer/founder.
@@ -51,6 +45,9 @@ ${authorName}
 
 MY PORTFOLIO:
 ${portfolioUrl}
+
+MY NAME:
+${userName}
 
 ---
 
@@ -105,12 +102,12 @@ STRICT RULES
 SUBJECT LINE RULES
 
 - YOU MUST follow this EXACT format:
-  "Application for [Role], [Stack] | Sahil Sharma"
+  "Application for [Role], [Stack] | ${userName}"
   
-- Example: "Application for Mobile Engineer, React Native | Sahil Sharma"
-- If it's a web role: "Application for Frontend Engineer, Next.js | Sahil Sharma"
+- Example: "Application for Mobile Engineer, React Native | ${userName}"
+- If it's a web role: "Application for Frontend Engineer, Next.js | ${userName}"
 - Use the primary role and tech stack from the post and resume.
-- DO NOT use any other format. Always end with " | Sahil Sharma".
+- DO NOT use any other format. Always end with " | ${userName}".
 
 ---
 
@@ -140,7 +137,7 @@ Return ONLY valid JSON:
       },
       { role: "user", content: prompt },
     ],
-    model: deployment,
+    model: "llama-3.1-8b-instant",
     response_format: { type: "json_object" },
   })
 
