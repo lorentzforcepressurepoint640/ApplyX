@@ -1,0 +1,7 @@
+{
+  "name": "@applyx/utils",
+  "version": "0.1.0",
+  "description": "Shared utility functions for ApplyX.",
+  "type": "module",
+  "private": true
+}

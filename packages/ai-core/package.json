@@ -1,0 +1,7 @@
+{
+  "name": "@applyx/ai-core",
+  "version": "0.1.0",
+  "description": "Shared AI logic and prompts for ApplyX.",
+  "type": "module",
+  "private": true
+}
