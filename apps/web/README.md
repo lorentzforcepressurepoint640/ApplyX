@@ -61,6 +61,3 @@ Build on Next.js 15+ and Plasmo. Send personalized job outreach emails directly 
 - **Azure OpenAI**: powers the gpt-4o-mini model for personalized email generation.
 - **Gmail API**: Securely sends emails with the resume text (and soon attachment) using the user's own account.
 - **Plasmo**: Modern framework for building the Chrome Extension content scripts and UI.
-
----
-Built with ❤️ by Antigravity
